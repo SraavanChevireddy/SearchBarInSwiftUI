@@ -21,9 +21,10 @@ struct ContentView: View {
                         TextField("Search", text: $searchText)
                             .padding(.leading,24)
                     }
+                    .frame(height: 10)
                     .padding()
                     .background(Color(.systemGray4))
-                    .cornerRadius(15)
+                    .cornerRadius(20)
                     .padding(.horizontal)
                     .onTapGesture {
                         isSearching = true
@@ -34,16 +35,23 @@ struct ContentView: View {
                             Spacer()
                             if isSearching{
                                 Button(action: {
+                                    isSearching = false
                                     searchText = ""
                                     hideKeyboard()
                                 }, label: {
-                                    Image(systemName: "xmark.circle.fill")
+                                    Button(action: {
+                                        searchText = ""
+                                        hideKeyboard()
+                                        isSearching = false
+                                    }, label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                    })
                                 })
                             }
                         }.padding(.horizontal,24)
                         .foregroundColor(Color.black)
                     ).transition(.move(edge: .trailing))
-                    .animation(.easeIn)
+                    .animation(.interactiveSpring())
                     
                     // Cancel button
                     if isSearching{
@@ -55,7 +63,7 @@ struct ContentView: View {
                             Text("Cancel")
                         }).padding(.trailing,10)
                         .transition(.move(edge: .trailing))
-                        .animation(.easeIn)
+                        .animation(.interactiveSpring())
                     }
                 }
                 
