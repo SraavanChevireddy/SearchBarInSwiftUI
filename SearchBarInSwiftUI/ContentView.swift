@@ -13,15 +13,28 @@ struct ContentView: View {
     var body: some View {
         NavigationView{
             ScrollView{
+                
                 HStack{
                     TextField("Search", text: $searchText)
+                        .padding(.leading,24)
                 }
                 .padding()
                 .background(Color(.systemGray4))
-                .cornerRadius(12)
+                .cornerRadius(15)
                 .padding(.horizontal)
+                .overlay(
+                    HStack{
+                        Image(systemName: "magnifyingglass")
+                        Spacer()
+                        Image(systemName: "xmark.circle.fill").onTapGesture {
+                            searchText = ""
+                            hideKeyboard()
+                        }
+                    }.padding(.horizontal,24)
+                    .foregroundColor(Color.black)
+                )
                 
-                ForEach(0..<20, id:\.self){ num in
+                ForEach((0..<20).filter({"\($0)".contains(searchText) || searchText.isEmpty}), id:\.self){ num in
                     HStack{
                         Text("\(num)"); Spacer()
                     }
@@ -40,3 +53,12 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+
+
+#if canImport(UIKit)
+extension View{
+    func hideKeyboard(){
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+#endif
