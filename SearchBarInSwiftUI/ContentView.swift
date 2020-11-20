@@ -10,29 +10,54 @@ import SwiftUI
 struct ContentView: View {
     
     @State var searchText = ""
+    @State var isSearching = false
+    
     var body: some View {
         NavigationView{
             ScrollView{
                 
                 HStack{
-                    TextField("Search", text: $searchText)
-                        .padding(.leading,24)
-                }
-                .padding()
-                .background(Color(.systemGray4))
-                .cornerRadius(15)
-                .padding(.horizontal)
-                .overlay(
                     HStack{
-                        Image(systemName: "magnifyingglass")
-                        Spacer()
-                        Image(systemName: "xmark.circle.fill").onTapGesture {
+                        TextField("Search", text: $searchText)
+                            .padding(.leading,24)
+                    }
+                    .padding()
+                    .background(Color(.systemGray4))
+                    .cornerRadius(15)
+                    .padding(.horizontal)
+                    .onTapGesture {
+                        isSearching = true
+                    }
+                    .overlay(
+                        HStack{
+                            Image(systemName: "magnifyingglass")
+                            Spacer()
+                            if isSearching{
+                                Button(action: {
+                                    searchText = ""
+                                    hideKeyboard()
+                                }, label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                })
+                            }
+                        }.padding(.horizontal,24)
+                        .foregroundColor(Color.black)
+                    ).transition(.move(edge: .trailing))
+                    .animation(.easeIn)
+                    
+                    // Cancel button
+                    if isSearching{
+                        Button(action: {
                             searchText = ""
                             hideKeyboard()
-                        }
-                    }.padding(.horizontal,24)
-                    .foregroundColor(Color.black)
-                )
+                            isSearching = false
+                        }, label: {
+                            Text("Cancel")
+                        }).padding(.trailing,10)
+                        .transition(.move(edge: .trailing))
+                        .animation(.easeIn)
+                    }
+                }
                 
                 ForEach((0..<20).filter({"\($0)".contains(searchText) || searchText.isEmpty}), id:\.self){ num in
                     HStack{
